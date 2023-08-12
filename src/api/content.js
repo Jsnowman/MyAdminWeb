@@ -7,3 +7,10 @@ export function getContentList(params) {
     params
   })
 }
+export function saveContent(data) {
+  return request({
+    url: '/admin/content/save',
+    method: 'post',
+    data
+  })
+}

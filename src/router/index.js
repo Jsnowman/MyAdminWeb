@@ -59,7 +59,7 @@ export const constantRoutes = [
     component: Layout,
     name: '内容管理',
     meta: { title: '内容管理', icon: 'el-icon-s-help' },
-    redirect: '/dashboard',
+    redirect: '/dashboard1',
     children: [{
       path: 'list',
       name: 'List',

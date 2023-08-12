@@ -1,5 +1,12 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="small" icon="el-icon-edit" @click="1">
+        新增
+      </el-button>
+    </div>
+    <br>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -10,7 +17,7 @@
     >
       <el-table-column align="center" label="ID" width="95">
         <template slot-scope="scope">
-          {{ scope.$index }}
+          {{ scope.row.id }}
         </template>
       </el-table-column>
       <el-table-column label="Title">
@@ -65,28 +72,37 @@
       @current-change="handleCurrentChange"
     />
 
-    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+    <el-dialog title="内容编辑" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" />
+        <el-form-item label="标题" :label-width="formLabelWidth">
+          <el-input v-model="form.title" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
+
+        <el-form-item label="内容" :label-width="formLabelWidth">
+          <el-input
+            v-model="form.content"
+            type="textarea"
+            :rows="5"
+            placeholder="请输入内容"
+          />
+        </el-form-item>
+        <el-form-item label="状态" :label-width="formLabelWidth">
+          <el-select v-model="form.status" placeholder="请选择活动区域">
+            <el-option label="启用" :value="1" />
+            <el-option label="禁用" :value="2" />
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="save">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getContentList } from '@/api/content'
+import { getContentList, saveContent } from '@/api/content'
 
 export default {
   filters: {
@@ -106,14 +122,10 @@ export default {
       currentPage4: 4,
       dialogFormVisible: false,
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+        id: '',
+        title: '',
+        content: '',
+        status: ''
       },
       formLabelWidth: '120px'
     }
@@ -135,8 +147,23 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
     },
-    handleEdit() {
+    handleEdit(index, rows) {
+      console.log(index)
+      console.log(rows)
+      this.form.id = rows.id
+      this.form.title = rows.title
+      this.form.content = rows.content
+      this.form.status = rows.status
       this.dialogFormVisible = true
+    },
+    save() {
+      console.log(this.form)
+      saveContent(this.form).then((response) => {
+        this.dialogFormVisible = false
+        this.fetchData()
+      }).catch(() => {
+        this.$message.error('保存失败')
+      })
     }
   }
 }
