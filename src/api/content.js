@@ -14,3 +14,11 @@ export function saveContent(data) {
     data
   })
 }
+
+export function delContent(params) {
+  return request({
+    url: '/admin/content/del',
+    method: 'get',
+    params
+  })
+}

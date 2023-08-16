@@ -61,22 +61,18 @@ export const constantRoutes = [
     meta: { title: '内容管理', icon: 'el-icon-s-help' },
     redirect: '/dashboard1',
     children: [{
+      path: 'category_list',
+      name: 'categoryList',
+      component: () => import('@/views/content/category_list'),
+      meta: { title: '目录管理', icon: 'dashboard' }
+    },
+    {
       path: 'list',
       name: 'List',
       component: () => import('@/views/content/list'),
       meta: { title: '内容列表', icon: 'dashboard' }
-    }]
-  },
-  {
-    path: '/test',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'test',
-      name: 'Test',
-      component: () => import('@/views/test/index'),
-      meta: { title: 'Test', icon: 'dashboard' }
-    }]
+    }
+    ]
   },
   {
     path: '/example',

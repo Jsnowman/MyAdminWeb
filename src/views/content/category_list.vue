@@ -1,18 +1,6 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="serchCategoryId" placeholder="类别">
-        <el-option
-          v-for="item in categoryList"
-          :key="item.id"
-          :label="item.category_name"
-          :value="item.id"
-        />
-      </el-select>
-      <el-input v-model="serchTitle" placeholder="标题" style="width: 200px;" class="filter-item" />
-      <el-button class="filter-item" type="primary" size="small" icon="el-icon-search" @click="serch">
-        查询
-      </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" size="small" icon="el-icon-edit" @click="handleCreate">
         新增
       </el-button>
@@ -32,32 +20,15 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="类目">
+      <el-table-column label="类目名称">
         <template slot-scope="scope">
           {{ scope.row.category_name }}
-        </template>
-      </el-table-column>
-      <el-table-column label="标题">
-        <template slot-scope="scope">
-          {{ scope.row.title }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        class-name="status-col"
-        label="Status"
-        width="110"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">
-            {{ scope.row.status }}
-          </el-tag>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
         prop="created_at"
-        label="Display_time"
+        label="创建时间"
         width="200"
       >
         <template slot-scope="scope">
@@ -91,33 +62,8 @@
 
     <el-dialog title="内容编辑" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="目录" :label-width="formLabelWidth">
-          <el-select v-model="form.category_id" placeholder="类别">
-            <el-option
-              v-for="item in categoryList"
-              :key="item.id"
-              :label="item.category_name"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth">
-          <el-input v-model="form.title" autocomplete="off" />
-        </el-form-item>
-
-        <el-form-item label="内容" :label-width="formLabelWidth">
-          <el-input
-            v-model="form.content"
-            type="textarea"
-            :rows="5"
-            placeholder="请输入内容"
-          />
-        </el-form-item>
-        <el-form-item label="状态" :label-width="formLabelWidth">
-          <el-select v-model="form.status" placeholder="请选择活动区域">
-            <el-option label="启用" :value="1" />
-            <el-option label="禁用" :value="2" />
-          </el-select>
+          <el-input v-model="form.category_name" autocomplete="off" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -129,8 +75,7 @@
 </template>
 
 <script>
-import { getContentList, saveContent, delContent } from '@/api/content'
-import { getCategoryList } from '@/api/category'
+import { getCategoryList, saveCategory, delCategory } from '@/api/category'
 
 export default {
   filters: {
@@ -146,20 +91,13 @@ export default {
   data() {
     return {
       list: null,
-      categoryList: null,
-      categoryMap: null,
       listLoading: true,
       dialogFormVisible: false,
       form: {
         id: '',
-        category_id: '',
-        title: '',
-        content: '',
-        status: ''
+        category_name: ''
       },
       formLabelWidth: '120px',
-      serchTitle: '',
-      serchCategoryId: '',
       currentPage: 1,
       pageSize: 10,
       pageIndex: 1,
@@ -167,29 +105,15 @@ export default {
     }
   },
   created() {
-    this.fetchCategory()
     this.fetchData()
   },
   methods: {
     fetchData() {
       this.listLoading = true
-      getContentList({ 'page': this.pageIndex, 'pageSize': this.pageSize, 'title': this.serchTitle }).then((response) => {
+      getCategoryList({ 'page': this.pageIndex, 'pageSize': this.pageSize }).then((response) => {
         this.list = response.data.data
-        this.list.forEach(element => {
-          element.category_name = this.categoryMap.get(element.category_id)
-        })
         this.total = response.data.total
         this.listLoading = false
-      })
-    },
-    fetchCategory() {
-      const fruits = new Map()
-      getCategoryList({ 'page': 1, 'pageSize': 1000 }).then((response) => {
-        this.categoryList = response.data.data
-        this.categoryList.forEach(element => {
-          fruits.set(element.id, element.category_name)
-        })
-        this.categoryMap = fruits
       })
     },
     handleSizeChange(val) {
@@ -208,7 +132,6 @@ export default {
       console.log(rows)
       this.form.id = rows.id
       this.form.title = rows.title
-      this.form.category_id = rows.category_id
       this.form.content = rows.content
       this.form.status = rows.status
       this.dialogFormVisible = true
@@ -222,7 +145,7 @@ export default {
     },
     save() {
       console.log(this.form)
-      saveContent(this.form).then((response) => {
+      saveCategory(this.form).then((response) => {
         this.dialogFormVisible = false
         this.fetchData()
       }).catch(() => {
@@ -235,7 +158,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delContent({ 'id': rows.id }).then((response) => {
+        delCategory({ 'id': rows.id }).then((response) => {
           this.fetchData()
           this.$message({
             type: 'success',
@@ -245,9 +168,6 @@ export default {
           this.$message.error('删除失败')
         })
       })
-    },
-    serch() {
-      this.fetchData()
     }
   }
 }
