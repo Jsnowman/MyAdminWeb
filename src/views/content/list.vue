@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="serchCategoryId" placeholder="类别">
+      <el-select v-model="serchCategoryId" clearable placeholder="类目">
         <el-option
           v-for="item in categoryList"
           :key="item.id"
@@ -167,19 +167,18 @@ export default {
     }
   },
   created() {
-    this.fetchCategory()
-    this.fetchData()
+      this.fetchCategory()
   },
   methods: {
     fetchData() {
       this.listLoading = true
       getContentList({ 'page': this.pageIndex, 'pageSize': this.pageSize, 'title': this.serchTitle }).then((response) => {
         this.list = response.data.data
+        this.listLoading = false
+        this.total = response.data.total
         this.list.forEach(element => {
           element.category_name = this.categoryMap.get(element.category_id)
         })
-        this.total = response.data.total
-        this.listLoading = false
       })
     },
     fetchCategory() {
@@ -190,6 +189,7 @@ export default {
           fruits.set(element.id, element.category_name)
         })
         this.categoryMap = fruits
+        this.fetchData()
       })
     },
     handleSizeChange(val) {
