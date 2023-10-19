@@ -79,7 +79,7 @@
     },
     created() {
         this.fetchData()
-        this.fetchCategory()
+        // this.fetchCategory()
     },
     methods: {
       fetchData() {
