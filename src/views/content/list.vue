@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="serchCategoryId" clearable placeholder="类目">
+      <el-select v-model="serchCategoryId" filterable clearable placeholder="类目">
         <el-option
           v-for="item in categoryList"
           :key="item.id"
-          :label="item.category_name"
+          :label="item.path_name"
           :value="item.id"
         />
       </el-select>
@@ -34,7 +34,7 @@
       </el-table-column>
       <el-table-column label="类目">
         <template slot-scope="scope">
-          {{ scope.row.category_name }}
+          {{ scope.row.path_name }}
         </template>
       </el-table-column>
       <el-table-column label="标题">
@@ -92,11 +92,11 @@
     <el-dialog title="内容编辑" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="目录" :label-width="formLabelWidth">
-          <el-select v-model="form.category_id" placeholder="类别">
+          <el-select v-model="form.category_id" filterable placeholder="类别">
             <el-option
               v-for="item in categoryList"
               :key="item.id"
-              :label="item.category_name"
+              :label="item.path_name"
               :value="item.id"
             />
           </el-select>
@@ -177,16 +177,17 @@ export default {
         this.listLoading = false
         this.total = response.data.total
         this.list.forEach(element => {
-          element.category_name = this.categoryMap.get(element.category_id)
+          element.path_name = this.categoryMap.get(element.category_id)
         })
       })
     },
     fetchCategory() {
       const fruits = new Map()
-      getCategoryList({ 'page': 1, 'pageSize': 1000 }).then((response) => {
-        this.categoryList = response.data.data
+      getCategoryList({ }).then((response) => {
+        console.log(response.data)
+        this.categoryList = response.data
         this.categoryList.forEach(element => {
-          fruits.set(element.id, element.category_name)
+          fruits.set(element.id, element.path_name)
         })
         this.categoryMap = fruits
         this.fetchData()

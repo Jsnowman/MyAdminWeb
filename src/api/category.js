@@ -1,12 +1,5 @@
 import request from '@/utils/request'
 
-export function getCategoryList(params) {
-    return request({
-        url: '/admin/category/list',
-        method: 'get',
-        params
-    })
-}
 export function saveCategory(data) {
     return request({
         url: '/admin/category/save',
@@ -25,7 +18,30 @@ export function delCategory(params) {
 
 export function getCategoryTree(params) {
     return request({
-        url: '/admin/category/treeList',
+        url: '/admin/category/tree',
+        method: 'get',
+        params
+    })
+}
+
+export function getCategoryList(params) {
+    return request({
+        url: '/admin/category/list',
+        method: 'get',
+        params
+    })
+}
+export function categorySave(data) {
+    return request({
+        url: '/admin/category/categorySave',
+        method: 'post',
+        data
+    })
+}
+
+export function categoryDel(params) {
+    return request({
+        url: '/admin/category/categoryDel',
         method: 'get',
         params
     })

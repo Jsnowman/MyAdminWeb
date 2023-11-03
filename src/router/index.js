@@ -92,13 +92,13 @@ export const constantRoutes = [
                 name: 'List',
                 component: () => import('@/views/content/list'),
                 meta: { title: '内容列表', icon: 'dashboard' }
-            },
-            {
-                path: 'category_list',
-                name: 'categoryList',
-                component: () => import('@/views/content/category_list'),
-                meta: { title: '目录管理', icon: 'dashboard' }
             }
+            // {
+            //     path: 'category_list',
+            //     name: 'categoryList',
+            //     component: () => import('@/views/content/category_list'),
+            //     meta: { title: '目录管理', icon: 'dashboard' }
+            // }
         ]
     },
     {
