@@ -42,6 +42,18 @@
           {{ scope.row.title }}
         </template>
       </el-table-column>
+      <el-table-column label="英文标题">
+        <template slot-scope="scope">
+          {{ scope.row.english_title }}
+        </template>
+      </el-table-column>
+
+      <el-table-column label="排序">
+        <template slot-scope="scope">
+          {{ scope.row.sort }}
+        </template>
+      </el-table-column>
+
       <el-table-column
         class-name="status-col"
         label="Status"
@@ -104,10 +116,23 @@
         <el-form-item label="标题" :label-width="formLabelWidth">
           <el-input v-model="form.title" autocomplete="off" />
         </el-form-item>
-
+        <el-form-item label="英文标题" :label-width="formLabelWidth">
+          <el-input v-model="form.english_title" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="排序" :label-width="formLabelWidth">
+          <el-input v-model="form.sort" autocomplete="off" />
+        </el-form-item>
         <el-form-item label="内容" :label-width="formLabelWidth">
           <el-input
             v-model="form.content"
+            type="textarea"
+            :rows="5"
+            placeholder="请输入内容"
+          />
+        </el-form-item>
+        <el-form-item label="中文翻译" :label-width="formLabelWidth">
+          <el-input
+            v-model="form.translation"
             type="textarea"
             :rows="5"
             placeholder="请输入内容"
@@ -154,7 +179,10 @@ export default {
         id: '',
         category_id: '',
         title: '',
+        english_title: '',
+        sort: 0,
         content: '',
+        translation: '',
         status: ''
       },
       formLabelWidth: '120px',
@@ -209,16 +237,22 @@ export default {
       console.log(rows)
       this.form.id = rows.id
       this.form.title = rows.title
+      this.form.english_title = rows.english_title
+      this.form.sort = rows.sort
       this.form.category_id = rows.category_id
       this.form.content = rows.content
+      this.form.translation = rows.translation
       this.form.status = rows.status
       this.dialogFormVisible = true
     },
     handleCreate() {
       this.form.id = 0
       this.form.title = ''
+      this.form.english_title = ''
       this.form.content = ''
+      this.form.translation = ''
       this.form.status = 1
+      this.form.sort = 0
       this.dialogFormVisible = true
     },
     save() {
